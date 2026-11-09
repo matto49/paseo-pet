@@ -67,6 +67,10 @@ test("only the trusted pet renderer may open links; successful dispatch is recor
       },
     },
     home,
+    async (url) => {
+      opened.push(url);
+      return { target: "installed-pwa" };
+    },
   );
   await ready;
   const frame = { url: pathToFileURL(join(home, "index.html")).href };

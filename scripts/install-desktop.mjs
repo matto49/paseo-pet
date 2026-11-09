@@ -40,8 +40,9 @@ export async function installDesktop(root, backupRoot) {
     for (const edit of edits) await writeFile(join(backup, edit.name), edit.before);
   }
   await mkdir(join(helper, "paseo-pet"), { recursive: true });
-  for (const name of ["main.cjs", "preload.cjs", "renderer.js"]) {
-    await copyFile(join(sources, name), join(helper, "paseo-pet", name));
+  for (const name of ["main.cjs", "preload.cjs", "renderer.js", "launch.cjs"]) {
+    const source = name === "launch.cjs" ? join(sources, "../server", name) : join(sources, name);
+    await copyFile(source, join(helper, "paseo-pet", name));
   }
   for (const edit of edits) await writeFile(join(helper, edit.name), edit.after);
   return { helper, patched: edits.length, backup: edits.length ? backup : null };

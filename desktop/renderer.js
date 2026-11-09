@@ -14,6 +14,16 @@
     openWorkSession: proto.openWorkSession,
   };
   const apply = (sprite) => {
+    // dsh-pet's first HTTP snapshot only establishes a baseline. Restore work
+    // already running before this window booted; real change ticks are positive.
+    if (
+      navigation?.enabled &&
+      navigation.work?.state &&
+      sprite.prevWorkTick === 0 &&
+      typeof sprite.onWorkTick === "function"
+    ) {
+      sprite.onWorkTick({ state: navigation.work.state, task: navigation.work.task }, -1);
+    }
     const notification = navigation?.enabled ? navigation.notification : null;
     if (
       notification?.url &&

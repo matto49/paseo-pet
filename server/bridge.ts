@@ -1,16 +1,14 @@
-import { execFile } from "node:child_process";
 import { mkdir, rename, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { promisify } from "node:util";
 import type { PaseoApi } from "@getpaseo/client";
 import { observeAgents } from "./agents.ts";
+import { launchPaseo } from "./launch.cjs";
 import type { AgentInfo, DisplayState } from "./model.ts";
 import { PetModel } from "./model.ts";
 import { type PetNotification, webHome, webSession } from "./navigation.ts";
 import { PetClient } from "./pet.ts";
 
-const execute = promisify(execFile);
 const pause = (ms: number, signal: AbortSignal) =>
   new Promise<void>((resolve) => {
     if (signal.aborted) return resolve();
@@ -211,10 +209,10 @@ export class PaseoPetBridge {
       try {
         const events = await this.pet.poll(signal);
         if (signal.aborted) break;
-        if (events["打开 Paseo"]) await execute("/usr/bin/open", [webHome]);
+        if (events["打开 Paseo"]) await launchPaseo(webHome);
         if (events["打开当前会话"]) {
           const selected = this.model.snapshot();
-          await execute("/usr/bin/open", [webSession(this.serverId, selected.agentId) || webHome]);
+          await launchPaseo(webSession(this.serverId, selected.agentId) || webHome);
           console.log(`[paseo-pet] Opened Paseo agent ${selected.agentId || "home"}`);
           this.event("menu.open-current");
         }

@@ -1,9 +1,17 @@
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type { PluginServerContext } from "@getpaseo/plugin/server";
 import { PaseoPetBridge } from "./server/bridge.ts";
+import { OpenSessionBridge } from "./server/open-session.ts";
 import { monitor } from "./shared/monitor.ts";
+import { openSession } from "./shared/open-session.ts";
 
 export default function contribute(server: PluginServerContext) {
   const bridge = new PaseoPetBridge();
+  const navigation = new OpenSessionBridge(
+    join(process.env.PASEO_HOME || join(homedir(), ".paseo"), "pet"),
+  );
+  server.handle(openSession, (input) => navigation.poll(input));
   server.handle(monitor, async (_input, context) => {
     await bridge.connect(context.paseo);
     return { connected: true };

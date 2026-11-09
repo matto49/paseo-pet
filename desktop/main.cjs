@@ -3,6 +3,7 @@ const { watchFile, unwatchFile } = require("node:fs");
 const { homedir } = require("node:os");
 const { join, resolve } = require("node:path");
 const { fileURLToPath } = require("node:url");
+const { launchPaseo } = require("./launch.cjs");
 
 // Only metadata from the local plugin crosses this IPC. No daemon or pet token.
 function allowedUrl(value, home) {
@@ -27,7 +28,7 @@ function allowedUrl(value, home) {
   }
 }
 
-function install({ app, ipcMain, BrowserWindow, shell }, helperDir) {
+function install({ app, ipcMain, BrowserWindow }, helperDir, launch = launchPaseo) {
   const statusPath = join(process.env.PASEO_HOME || join(homedir(), ".paseo"), "pet/status.json");
   const logPath = join(statusPath, "../navigation-events.jsonl");
   let status = null;
@@ -78,10 +79,14 @@ function install({ app, ipcMain, BrowserWindow, shell }, helperDir) {
     if (!trusted(event) || !status?.enabled) return false;
     const url = allowedUrl(value, status.homeUrl);
     if (!url) return false;
-    await shell.openExternal(url);
-    await appendFile(logPath, `${JSON.stringify({ at: new Date().toISOString(), url })}\n`, {
-      mode: 0o600,
-    }).catch(() => {});
+    const result = await launch(url);
+    await appendFile(
+      logPath,
+      `${JSON.stringify({ at: new Date().toISOString(), ...result, url })}\n`,
+      {
+        mode: 0o600,
+      },
+    ).catch(() => {});
     return true;
   });
   watchFile(statusPath, { interval: 300, persistent: false }, () => void load());

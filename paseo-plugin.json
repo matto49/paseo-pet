@@ -4,6 +4,6 @@
   "description": "把 Paseo 会话的工作、等待确认、完成和错误状态同步到本机桌宠；从桌宠菜单返回当前会话。",
   "media": [],
   "requirements": {
-    "paseo": ">=0.15.3"
+    "paseo": ">=0.15.0"
   }
 }

@@ -1,8 +1,10 @@
 import type { PluginClientContext } from "@getpaseo/plugin/client";
+import { connectInstalledApp } from "./client/navigation.ts";
 import { monitor } from "./shared/monitor.ts";
 
 // The server owns the observation, so closing the app does not stop the pet.
 export default function contribute(client: PluginClientContext) {
+  const disconnectNavigation = connectInstalledApp(client);
   let stopped = false;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const connect = () => {
@@ -13,6 +15,7 @@ export default function contribute(client: PluginClientContext) {
   connect();
   return () => {
     stopped = true;
+    disconnectNavigation();
     if (retry) clearTimeout(retry);
   };
 }

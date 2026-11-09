@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "node --experimental-strip-types --test server/*.test.ts desktop/*.test.mjs scripts/*.test.mjs",
+    "test": "node --experimental-strip-types --test client/*.test.ts server/*.test.ts desktop/*.test.mjs scripts/*.test.mjs",
     "desktop:install": "node scripts/install-desktop.mjs"
   },
   "devDependencies": {
