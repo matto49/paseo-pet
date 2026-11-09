@@ -1,6 +1,7 @@
 {
   "id": "paseo-pet",
-  "$comment": "Add \"name\": \"My plugin\" to set a display name. Add \"icon\": \"assets/icon.png\" for a PNG inside the package. Add image or video paths (relative to this manifest) or HTTPS URLs to media. Include local assets in package.json files.",
+  "name": "Paseo Pet",
+  "description": "把 Paseo 会话的工作、等待确认、完成和错误状态同步到本机桌宠；从桌宠菜单返回当前会话。",
   "media": [],
   "requirements": {
     "paseo": ">=0.15.3"

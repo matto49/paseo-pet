@@ -1,29 +1,11 @@
-<!--
-OVERVIEW.md is required to list your plugin in the registry. Keep it beside
-paseo-plugin.json in your repository at the pinned commit and in your npm package.
-Replace this comment with useful facts before publishing.
+# Paseo Pet
 
-This overview is for people choosing a plugin in Paseo, on the plugin page under
-its install command. README assumes a GitHub audience and includes technical
-details, installation instructions, and badges. Long, AI-generated READMEs leave
-people reading past that material to understand what the plugin does.
+让本机的 [dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 随 Paseo 会话切换工作、等待确认、完成和出错状态。桌宠右键菜单提供“打开 Paseo”“打开当前会话”和“刷新联动状态”。
 
-Write these parts in order, including only what helps someone decide to install:
+需要运行 Paseo 0.15.3 或更新版本，以及已安装的 dsh-pet 独立桌宠。本机验证环境是 macOS、Paseo 0.15.3 和 dsh-pet 0.4.3。插件首次连接需要打开 Paseo 客户端；连接后由 daemon 中的插件持续监听，关闭客户端窗口也可继续联动。
 
-1. Describe what your plugin is and does in plain terms first.
-2. Explain how it works only when it is not obvious.
-3. Explain setup when needed: settings, accounts, tokens, providers, tools, or
-   other plugins. Include applicable daemon version and operating system
-   requirements. Setup guidance is allowed; installation instructions are not.
-4. Explain capabilities and settings worth understanding, what each option does,
-   what the plugin reads or sends and where, permissions, and known limits.
+同时有多个会话时，等待确认优先于出错和运行状态。完成状态保留约 10 秒，出错状态保留约 30 秒；真正的轮次结束会弹出气泡。打开插件时不会把历史完成会话当成刚完成的任务。子会话和已归档会话不单独占用显示。
 
-Length follows complexity; a theme needs one paragraph. Choose headings only
-when they help. Use sentence case and plain factual language, with no em dashes.
-Omit installation commands, badges, changelog, contributing or license sections,
-marketing, and unsupported claims. Avoid implementation filler such as empty
-cleanup functions, theme-token field lists, or lists of absent features.
+联动读取会话 ID、标题、运行状态、轮次结果和权限请求 ID，写入本机桌宠 HTTP 接口及 `~/.paseo/pet/status.json`，不读取聊天正文。桌宠令牌从本机运行文件读取，联动不向外部服务发送会话数据。桌宠原有的 AI 聊天功能有独立配置和数据流。
 
-To translate the overview, add a whole copy beside this file named for the
-language, such as OVERVIEW.zh-CN.md. Readers in that language see it instead.
--->
+目前只连接这台机器上的 Paseo daemon。菜单“打开当前会话”指向桌宠正在展示的会话；没有活动会话时打开 Paseo。宠物造型、尺寸和动画继续由 dsh-pet 管理。

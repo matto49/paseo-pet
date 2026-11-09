@@ -1,0 +1,9 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.6/schema.json",
+  "files": { "ignoreUnknown": true, "includes": ["**", "!node_modules", "!artifacts"] },
+  "formatter": { "indentStyle": "space", "lineWidth": 100 },
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended", "complexity": { "useLiteralKeys": "off" } }
+  }
+}
