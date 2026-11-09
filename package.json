@@ -13,13 +13,16 @@
     "index.server.tsx",
     "client/",
     "server/",
-    "shared/"
+    "shared/",
+    "desktop/",
+    "scripts/"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "node --experimental-strip-types --test server/*.test.ts"
+    "test": "node --experimental-strip-types --test server/*.test.ts desktop/*.test.mjs scripts/*.test.mjs",
+    "desktop:install": "node scripts/install-desktop.mjs"
   },
   "devDependencies": {
     "@getpaseo/plugin": "0.15.3",

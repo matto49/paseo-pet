@@ -7,6 +7,7 @@ import type { PaseoApi } from "@getpaseo/client";
 import { observeAgents } from "./agents.ts";
 import type { AgentInfo, DisplayState } from "./model.ts";
 import { PetModel } from "./model.ts";
+import { type PetNotification, webHome, webSession } from "./navigation.ts";
 import { PetClient } from "./pet.ts";
 
 const execute = promisify(execFile);
@@ -39,6 +40,8 @@ export class PaseoPetBridge {
   private disconnect: (() => Promise<void>) | undefined;
   private retry: ReturnType<typeof setTimeout> | undefined;
   private statusPath: string;
+  private notification: PetNotification | null = null;
+  private notificationSequence = Date.now();
 
   constructor(
     pet = new PetClient(),
@@ -81,9 +84,15 @@ export class PaseoPetBridge {
       const title = Array.from(agent.title || agent.provider || "会话")
         .slice(0, 24)
         .join("");
-      void this.pet
-        .say(`Paseo · ${title}：${outcome === "completed" ? "本轮完成" : "执行出错"}`)
-        .catch(() => this.warn("桌宠暂时不可达，联动稍后重连"));
+      const text = `Paseo · ${title}：${outcome === "completed" ? "本轮完成" : "执行出错"}`;
+      this.notification = {
+        id: ++this.notificationSequence,
+        text,
+        url: webSession(this.serverId, agent.id),
+        expiresAt: Date.now() + 10_000,
+      };
+      this.schedule();
+      void this.pet.say(text).catch(() => this.warn("桌宠暂时不可达，联动稍后重连"));
     }
   }
 
@@ -166,6 +175,16 @@ export class PaseoPetBridge {
       JSON.stringify(
         {
           ...display,
+          navigation: {
+            enabled: !this.controller.signal.aborted,
+            homeUrl: webHome,
+            work: {
+              task: display.task,
+              state: display.state,
+              url: webSession(this.serverId, display.agentId),
+            },
+            notification: this.notification,
+          },
           serverId: this.serverId,
           connected: this.observers > 0,
           lastEvent: this.latestEvent,
@@ -192,14 +211,10 @@ export class PaseoPetBridge {
       try {
         const events = await this.pet.poll(signal);
         if (signal.aborted) break;
-        if (events["打开 Paseo"]) await execute("/usr/bin/open", ["-a", "Paseo"]);
+        if (events["打开 Paseo"]) await execute("/usr/bin/open", [webHome]);
         if (events["打开当前会话"]) {
           const selected = this.model.snapshot();
-          if (this.serverId && selected.agentId) {
-            await execute("/usr/bin/open", [
-              `paseo://h/${encodeURIComponent(this.serverId)}/agent/${encodeURIComponent(selected.agentId)}`,
-            ]);
-          } else await execute("/usr/bin/open", ["-a", "Paseo"]);
+          await execute("/usr/bin/open", [webSession(this.serverId, selected.agentId) || webHome]);
           console.log(`[paseo-pet] Opened Paseo agent ${selected.agentId || "home"}`);
           this.event("menu.open-current");
         }
