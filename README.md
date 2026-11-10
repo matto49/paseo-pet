@@ -51,4 +51,4 @@ paseo plugin disable paseo-pet --json
 
 检查命令为 `npm run typecheck`、`npm run lint` 和 `npm test`。测试覆盖并发会话、权限解除、过期和取消、分页、订阅重连，以及通过真实本地 HTTP 服务验证桌宠令牌轮换和失败重试。
 
-本项目是独立的 Paseo 适配插件，桌宠显示由 [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 提供。本仓库没有复制上游宠物素材。上游代码采用 MIT 许可，素材禁止商用，二创在公开渠道需署名；使用和分发时还应遵守各素材原作者的授权要求。
+本仓库代码采用 MIT 许可，见 [LICENSE](LICENSE)。本项目是独立的 Paseo 适配插件，桌宠显示由 [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 提供。本仓库没有复制上游宠物素材。上游代码采用 MIT 许可，素材禁止商用，二创在公开渠道需署名；使用和分发时还应遵守各素材原作者的授权要求。
